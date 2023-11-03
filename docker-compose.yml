@@ -205,7 +205,7 @@ services:
     ports:
      - "8086:8086"
     volumes:
-      - .grafanadb:/var/lib/influxdb
+      - grafanadb:/var/lib/influxdb
     environment:
       INFLUXDB_DB: actualdb
  grafana:
