@@ -23,7 +23,7 @@ $ cd /opt/app
 ```
 ```bash
 # Fazendo Git do projeto
-$ git clone https://github.com/Math-benites/zabbix-compose-6.0.git . 
+$ git clone https://github.com/Math-benites/zabbix-compose-6.4.git . 
 ```
 ```bash
 # Rodando compose
