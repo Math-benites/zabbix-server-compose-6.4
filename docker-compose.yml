@@ -1,0 +1,513 @@
+version '3.5'
+services
+ zabbix-server
+  image zabbixzabbix-server-mysqlol-6.4-latest
+  ports
+   - 1005110051
+  volumes
+   - etclocaltimeetclocaltimero
+   - etctimezoneetctimezonero 
+#   - dbsocketvarrunmysqld
+   - .zbx_envusrlibzabbixalertscriptsusrlibzabbixalertscriptsro
+   - .zbx_envusrlibzabbixexternalscriptsusrlibzabbixexternalscriptsro
+   - .zbx_envvarlibzabbixdbscriptsvarlibzabbixdbscriptsro
+   - .zbx_envvarlibzabbixexportvarlibzabbixexportrw
+   - .zbx_envvarlibzabbixmodulesvarlibzabbixmodulesro
+   - .zbx_envvarlibzabbixencvarlibzabbixencro
+   - .zbx_envvarlibzabbixssh_keysvarlibzabbixssh_keysro
+   - .zbx_envvarlibzabbixmibsvarlibzabbixmibsro
+   - snmptrapsvarlibzabbixsnmptrapsrw
+  ulimits
+   nproc 65535
+   nofile
+    soft 20000
+    hard 40000
+  deploy
+   resources
+    limits
+      cpus '0.70'
+      memory 1G
+    reservations
+      cpus '0.5'
+      memory 512M
+  env_file
+   - .env_vars.env_db_mysql
+   - .env_vars.env_srv
+  secrets
+   - MYSQL_USER
+   - MYSQL_PASSWORD
+   - MYSQL_ROOT_USER
+   - MYSQL_ROOT_PASSWORD
+#   - client-key.pem
+#   - client-cert.pem
+#   - root-ca.pem
+  depends_on
+   - mysql-server
+  networks
+   zbx_net_backend
+     aliases
+      - zabbix-server
+      - zabbix-server-mysql
+      - zabbix-server-ol-mysql
+      - zabbix-server-mysql-ol
+   zbx_net_frontend
+#  devices
+#   - devttyUSB0devttyUSB0
+  stop_grace_period 30s
+  sysctls
+   - net.ipv4.ip_local_port_range=1024 64999
+   - net.ipv4.conf.all.accept_redirects=0
+   - net.ipv4.conf.all.secure_redirects=0
+   - net.ipv4.conf.all.send_redirects=0
+  labels
+   com.zabbix.description Zabbix server with MySQL database support
+   com.zabbix.company Zabbix LLC
+   com.zabbix.component zabbix-server
+   com.zabbix.dbtype mysql
+   com.zabbix.os oracle linux
+
+ zabbix-proxy-sqlite3
+  image zabbixzabbix-proxy-sqlite3ol-6.4-latest
+  profiles
+   - all
+  ports
+   - 1006110051
+  volumes
+   - etclocaltimeetclocaltimero
+   - etctimezoneetctimezonero 
+   - .zbx_envusrlibzabbixexternalscriptsusrlibzabbixexternalscriptsro
+   - .zbx_envvarlibzabbixmodulesvarlibzabbixmodulesro
+   - .zbx_envvarlibzabbixencvarlibzabbixencro
+   - .zbx_envvarlibzabbixssh_keysvarlibzabbixssh_keysro
+   - .zbx_envvarlibzabbixmibsvarlibzabbixmibsro
+   - snmptrapsvarlibzabbixsnmptrapsrw
+  ulimits
+   nproc 65535
+   nofile
+    soft 20000
+    hard 40000
+  deploy
+   resources
+    limits
+      cpus '0.70'
+      memory 512M
+    reservations
+      cpus '0.3'
+      memory 256M
+  env_file
+   - .env_vars.env_prx
+   - .env_vars.env_prx_sqlite3
+  depends_on
+   - zabbix-java-gateway
+   - zabbix-snmptraps
+  networks
+   zbx_net_backend
+    aliases
+     - zabbix-proxy-sqlite3
+     - zabbix-proxy-ol-sqlite3
+     - zabbix-proxy-sqlite3-ol
+   zbx_net_frontend
+  stop_grace_period 30s
+  labels
+   com.zabbix.description Zabbix proxy with SQLite3 database support
+   com.zabbix.company Zabbix LLC
+   com.zabbix.component zabbix-proxy
+   com.zabbix.dbtype sqlite3
+   com.zabbix.os oracle linux
+
+ zabbix-proxy-mysql
+  image zabbixzabbix-proxy-mysqlol-6.4-latest
+  profiles
+   - all
+  ports
+   - 1007110051
+  volumes
+   - etclocaltimeetclocaltimero
+   - etctimezoneetctimezonero
+#   - dbsocketvarrunmysqld
+   - .zbx_envusrlibzabbixexternalscriptsusrlibzabbixexternalscriptsro
+   - .zbx_envvarlibzabbixmodulesvarlibzabbixmodulesro
+   - .zbx_envvarlibzabbixencvarlibzabbixencro
+   - .zbx_envvarlibzabbixssh_keysvarlibzabbixssh_keysro
+   - .zbx_envvarlibzabbixmibsvarlibzabbixmibsro
+   - snmptrapsvarlibzabbixsnmptrapsrw
+  ulimits
+   nproc 65535
+   nofile
+    soft 20000
+    hard 40000
+  deploy
+   resources
+    limits
+      cpus '0.70'
+      memory 512M
+    reservations
+      cpus '0.3'
+      memory 256M
+  env_file
+   - .env_vars.env_db_mysql_proxy
+   - .env_vars.env_prx
+   - .env_vars.env_prx_mysql
+  depends_on
+   - mysql-server
+   - zabbix-java-gateway
+   - zabbix-snmptraps
+  secrets
+   - MYSQL_USER
+   - MYSQL_PASSWORD
+   - MYSQL_ROOT_USER
+   - MYSQL_ROOT_PASSWORD
+#   - client-key.pem
+#   - client-cert.pem
+#   - root-ca.pem
+  networks
+   zbx_net_backend
+    aliases
+     - zabbix-proxy-mysql
+     - zabbix-proxy-ol-mysql
+     - zabbix-proxy-mysql-ol
+   zbx_net_frontend
+  stop_grace_period 30s
+  labels
+   com.zabbix.description Zabbix proxy with MySQL database support
+   com.zabbix.company Zabbix LLC
+   com.zabbix.component zabbix-proxy
+   com.zabbix.dbtype mysql
+   com.zabbix.os oracle linux
+
+ zabbix-web-apache-mysql
+  image zabbixzabbix-web-apache-mysqlol-6.4-latest
+  profiles
+   - all
+  ports
+   - 80818080
+   - 84438443
+  volumes
+   - etclocaltimeetclocaltimero
+   - etctimezoneetctimezonero
+#   - dbsocketvarrunmysqld
+   - .zbx_envetcsslapache2etcsslapache2ro
+   - .zbx_envusrsharezabbixmodulesusrsharezabbixmodulesro
+  deploy
+   resources
+    limits
+      cpus '0.70'
+      memory 512M
+    reservations
+      cpus '0.5'
+      memory 256M
+  env_file
+   - .env_vars.env_db_mysql
+   - .env_vars.env_web
+  secrets
+   - MYSQL_USER
+   - MYSQL_PASSWORD
+#   - client-key.pem
+#   - client-cert.pem
+#   - root-ca.pem
+  depends_on
+   - mysql-server
+   - zabbix-server
+  healthcheck
+   test [CMD, curl, -f, httplocalhost8080ping]
+   interval 10s
+   timeout 5s
+   retries 3
+   start_period 30s
+  networks
+   zbx_net_backend
+    aliases
+     - zabbix-web-apache-mysql
+     - zabbix-web-apache-ol-mysql
+     - zabbix-web-apache-mysql-ol
+   zbx_net_frontend
+  stop_grace_period 10s
+  sysctls
+   - net.core.somaxconn=65535
+  labels
+   com.zabbix.description Zabbix frontend on Apache web-server with MySQL database support
+   com.zabbix.company Zabbix LLC
+   com.zabbix.component zabbix-frontend
+   com.zabbix.webserver apache2
+   com.zabbix.dbtype mysql
+   com.zabbix.os oracle linux
+
+ zabbix-web-nginx-mysql
+  image zabbixzabbix-web-nginx-mysqlol-6.4-latest
+  ports
+   - 808080
+   - 4438443
+  volumes
+   - etclocaltimeetclocaltimero
+   - etctimezoneetctimezonero
+#   - dbsocketvarrunmysqld
+   - .zbx_envetcsslnginxetcsslnginxro
+   - .zbx_envusrsharezabbixmodulesusrsharezabbixmodulesro
+  deploy
+   resources
+    limits
+      cpus '0.70'
+      memory 512M
+    reservations
+      cpus '0.5'
+      memory 256M
+  env_file
+   - .env_vars.env_db_mysql
+   - .env_vars.env_web
+  secrets
+   - MYSQL_USER
+   - MYSQL_PASSWORD
+#   - client-key.pem
+#   - client-cert.pem
+#   - root-ca.pem
+  depends_on
+   - mysql-server
+   - zabbix-server
+  healthcheck
+   test [CMD, curl, -f, httplocalhost8080ping]
+   interval 10s
+   timeout 5s
+   retries 3
+   start_period 30s
+  networks
+   zbx_net_backend
+    aliases
+     - zabbix-web-nginx-mysql
+     - zabbix-web-nginx-ol-mysql
+     - zabbix-web-nginx-mysql-ol
+   zbx_net_frontend
+  stop_grace_period 10s
+  sysctls
+   - net.core.somaxconn=65535
+  labels
+   com.zabbix.description Zabbix frontend on Nginx web-server with MySQL database support
+   com.zabbix.company Zabbix LLC
+   com.zabbix.component zabbix-frontend
+   com.zabbix.webserver nginx
+   com.zabbix.dbtype mysql
+   com.zabbix.os oracle linux
+
+ zabbix-agent
+  image zabbixzabbix-agentol-6.4-latest
+  profiles
+   - full
+   - all
+  ports
+   - 1005010050
+  volumes
+   - etclocaltimeetclocaltimero
+   - etctimezoneetctimezonero
+   - .zbx_envetczabbixzabbix_agentd.detczabbixzabbix_agentd.dro
+   - .zbx_envvarlibzabbixmodulesvarlibzabbixmodulesro
+   - .zbx_envvarlibzabbixencvarlibzabbixencro
+   - .zbx_envvarlibzabbixssh_keysvarlibzabbixssh_keysro
+  deploy
+   resources
+    limits
+      cpus '0.2'
+      memory 128M
+    reservations
+      cpus '0.1'
+      memory 64M
+   mode global
+  env_file
+   - .env_vars.env_agent
+  privileged true
+  pid host
+  networks
+   zbx_net_backend
+    aliases
+     - zabbix-agent
+     - zabbix-agent-passive
+     - zabbix-agent-ol
+  stop_grace_period 5s
+  labels
+   com.zabbix.description Zabbix agent
+   com.zabbix.company Zabbix LLC
+   com.zabbix.component zabbix-agentd
+   com.zabbix.os oracle linux
+
+ zabbix-java-gateway
+  image zabbixzabbix-java-gatewayol-6.4-latest
+  profiles
+   - full
+   - all
+  ports
+   - 1005210052
+  deploy
+   resources
+    limits
+      cpus '0.5'
+      memory 512M
+    reservations
+      cpus '0.25'
+      memory 256M
+  env_file
+   - .env_vars.env_java
+  networks
+   zbx_net_backend
+    aliases
+     - zabbix-java-gateway
+     - zabbix-java-gateway-ol
+  stop_grace_period 5s
+  labels
+   com.zabbix.description Zabbix Java Gateway
+   com.zabbix.company Zabbix LLC
+   com.zabbix.component java-gateway
+   com.zabbix.os oracle linux
+
+ zabbix-snmptraps
+  image zabbixzabbix-snmptrapsol-6.4-latest
+  profiles
+   - full
+   - all
+  ports
+   - 1621162udp
+  volumes
+   - snmptrapsvarlibzabbixsnmptrapsrw
+  deploy
+   resources
+    limits
+      cpus '0.5'
+      memory 256M
+    reservations
+      cpus '0.25'
+      memory 128M
+  networks
+   zbx_net_frontend
+    aliases
+     - zabbix-snmptraps
+   zbx_net_backend
+  stop_grace_period 5s
+  labels
+   com.zabbix.description Zabbix snmptraps
+   com.zabbix.company Zabbix LLC
+   com.zabbix.component snmptraps
+   com.zabbix.os oracle linux
+
+ zabbix-web-service
+  image zabbixzabbix-web-serviceol-6.4-latest
+  profiles
+   - full
+   - all
+  ports
+   - 1005310053
+  volumes
+   - .zbx_envvarlibzabbixencvarlibzabbixencro
+  security_opt
+   - seccomp.env_varschrome_dp.json
+  deploy
+   resources
+    limits
+      cpus '0.5'
+      memory 512M
+    reservations
+      cpus '0.25'
+      memory 256M
+  env_file
+   - .env_vars.env_web_service
+  networks
+   zbx_net_backend
+    aliases
+     - zabbix-web-service
+     - zabbix-web-service-ol
+  stop_grace_period 5s
+  labels
+   com.zabbix.description Zabbix web service
+   com.zabbix.company Zabbix LLC
+   com.zabbix.component web-service
+   com.zabbix.os oracle linux
+
+ mysql-server
+  image mysql8.0-oracle
+  command
+   - mysqld
+   - --character-set-server=utf8mb4
+   - --collation-server=utf8mb4_bin
+# Only during upgrade from versions prior 6.4
+#   - --log_bin_trust_function_creators=1
+# Use TLS encryption for connections to database
+#   - --require-secure-transport
+#   - --ssl-ca=runsecretsroot-ca.pem
+#   - --ssl-cert=runsecretsserver-cert.pem
+#   - --ssl-key=runsecretsserver-key.pem
+  volumes
+   - .zbx_envvarlibmysqlvarlibmysqlrw
+#   - dbsocketvarrunmysqld
+  env_file
+   - .env_vars.env_db_mysql
+  secrets
+   - MYSQL_USER
+   - MYSQL_PASSWORD
+   - MYSQL_ROOT_PASSWORD
+#   - server-key.pem
+#   - server-cert.pem
+#   - root-ca.pem
+  stop_grace_period 1m
+  networks
+   zbx_net_backend
+    aliases
+     - mysql-server
+     - zabbix-database
+     - mysql-database
+
+ db_data_mysql
+  image busybox
+  volumes
+   - .zbx_envvarlibmysqlvarlibmysqlrw
+
+# elasticsearch
+#  image elasticsearch
+#  profiles
+#   - full
+#   - all
+#  environment
+#   - transport.host=0.0.0.0
+#   - discovery.zen.minimum_master_nodes=1
+#  networks
+#   zbx_net_backend
+#    aliases
+#     - elasticsearch
+
+networks
+  zbx_net_frontend
+    driver bridge
+    driver_opts
+      com.docker.network.enable_ipv6 false
+    ipam
+      driver default
+      config
+      - subnet 172.16.238.024
+  zbx_net_backend
+    driver bridge
+    driver_opts
+      com.docker.network.enable_ipv6 false
+    internal true
+    ipam
+      driver default
+      config
+      - subnet 172.16.239.024
+
+volumes
+  snmptraps
+#  dbsocket
+
+secrets
+  MYSQL_USER
+    file .env_vars.MYSQL_USER
+  MYSQL_PASSWORD
+    file .env_vars.MYSQL_PASSWORD
+  MYSQL_ROOT_USER
+    file .env_vars.MYSQL_ROOT_USER
+  MYSQL_ROOT_PASSWORD
+    file .env_vars.MYSQL_ROOT_PASSWORD
+#  client-key.pem
+#    file .env_vars.ZBX_DB_KEY_FILE
+#  client-cert.pem
+#    file .env_vars.ZBX_DB_CERT_FILE
+#  root-ca.pem
+#    file .env_vars.ZBX_DB_CA_FILE
+#  server-cert.pem
+#    file .env_vars.DB_CERT_FILE
+#  server-key.pem
+#    file .env_vars.DB_KEY_FILE
