@@ -33,7 +33,11 @@ Rodando compose
 docker compose up -d
 ```
 
-O servidor Zabbix inciará na porta:80 - acesse <http://MYIP/>
+O servidor Zabbix(http) inciará na porta:8880 - acesse <http://MYIP:8880/>
+
+O servidor Zabbix(https) inciará na porta:8443 - acesse <https://MYIP:8443/>
+
+(Necessario importacao de certificado em "/zbx_env/etc/ssl/apache2")
 
 O servidor Grafana inciará na porta:3000 - acesse <http://MYIP:3000>
 
@@ -41,17 +45,17 @@ O servidor Grafana inciará na porta:3000 - acesse <http://MYIP:3000>
 
 Zabbix server.config
 ```bash
-nano ./zabbix/env_vars/.env_srv
+nano ./env_vars/.env_srv
 ```
 
 Zabbix web.config
 ```bash
-nano ./zabbix/env_vars/.env_web
+nano ./env_vars/.env_web
 ```
 
 Zabbix mysql.config
 ```bash
-nano ./zabbix/env_vars/.env_db_mysql
+nano ./env_vars/.env_db_mysql
 ```
 
 
