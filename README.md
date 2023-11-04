@@ -13,21 +13,24 @@ Antes de começar, você vai precisar ter instalado
 
 ### 🎲 ( Rodando Compose )
 
+Criando diretorios
 ```bash
-# Criando diretorios
-$ mkdir -p /opt/app/
+mkdir -p /opt/app/
 ```
+
+Acessando diretorio
 ```bash
-# Acessando diretorio
-$ cd /opt/app
+cd /opt/app
 ```
+
+ Fazendo Git do projeto
 ```bash
-# Fazendo Git do projeto
-$ git clone https://github.com/Math-benites/zabbix-server-compose-6.4.git . 
+git clone https://github.com/Math-benites/zabbix-server-compose-6.4.git . 
 ```
+
+Rodando compose
 ```bash
-# Rodando compose
-$ docker compose up -d
+docker compose up -d
 ```
 
 O servidor Zabbix inciará na porta:80 - acesse <http://MYIP/>
@@ -36,17 +39,19 @@ O servidor Grafana inciará na porta:3000 - acesse <http://MYIP:3000>
 
 ### 🔧 ( Alterando Configuracoes - Opicional )
 
+Zabbix server.config
 ```bash
-# Zabbix server.config
-$ nano ./zabbix/env_vars/.env_srv
+nano ./zabbix/env_vars/.env_srv
 ```
+
+Zabbix web.config
 ```bash
-# Zabbix web.config
-$ nano ./zabbix/env_vars/.env_web
+nano ./zabbix/env_vars/.env_web
 ```
+
+Zabbix mysql.config
 ```bash
-# Zabbix mysql.config
-$ nano ./zabbix/env_vars/.env_db_mysql
+nano ./zabbix/env_vars/.env_db_mysql
 ```
 
 
