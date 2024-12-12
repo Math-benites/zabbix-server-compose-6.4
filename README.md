@@ -7,7 +7,11 @@ Antes de começar, você vai precisar ter instalado
 
 [Docker Compose version v2.3.3 igual ou superior]
 
+
 [Docker Engine Version: 23.0.1 igual ou superior]
+
+
+[Instale o Docker seguindo este guia](https://github.com/Math-benites/docker-install-script)
 
 
 
