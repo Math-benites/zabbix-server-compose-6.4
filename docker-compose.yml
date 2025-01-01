@@ -209,7 +209,7 @@ services:
     environment:
       INFLUXDB_DB: actualdb
  grafana:
-   image: grafana/grafana:9.4.0
+   image: grafana/grafana:11.1.9
    restart: always
    ports:
       - "3000:3000"
@@ -217,6 +217,11 @@ services:
       - influxdb
    volumes:
       - grafana:/var/lib/grafana
+#   environment:
+#      - GF_AUTH_ANONYMOUS_ENABLED=true
+#      - GF_SECURITY_ALLOW_EMBEDDING=true
+
+
    networks:
     zbx_net_frontend:
       aliases:

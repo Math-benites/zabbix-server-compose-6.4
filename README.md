@@ -41,7 +41,7 @@ O servidor Zabbix(https) inciará na porta:8443 - acesse <https://MYIP:8443/>
 
 O servidor Grafana inciará na porta:3000 - acesse <http://MYIP:3000>
 
-### 🔧 ( Alterando Configuracoes - Opicional )
+### 🔧 Zabbix ( Alterando Configuracoes - Opicional )
 
 Zabbix server.config
 ```bash
@@ -56,6 +56,23 @@ nano ./env_vars/.env_web
 Zabbix mysql.config
 ```bash
 nano ./env_vars/.env_db_mysql
+```
+
+### 🔧 Grafana  
+
+# url public - compartilhar dentro do zabbix url
+
+```bash
+   environment:
+      - GF_AUTH_ANONYMOUS_ENABLED=true
+      - GF_SECURITY_ALLOW_EMBEDDING=true
+```
+
+# Plugin configure - add datasouce URL API
+
+```bash
+http://MYIPHOST:8880/api_jsonrpc.php
+
 ```
 
 
